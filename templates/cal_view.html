@@ -1,40 +1,154 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Event Details</title>
+    <title>Meeting Mate</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css"
+          integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+    <style>
+
+        .mm-table-input {
+            width: 100%;
+            padding-top: 100px;
+        }
+
+        .button-col {
+            padding-left: 100px;
+        }
+
+        .table .mm-table-input td {
+            padding: 10px;
+        }
+
+        .button-reminder {
+            text-align: right;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-     <h1>Event Details</h1>
+{% set events = data['cal_meetings'] %}
 
-     <button id="sendReminderBtn">Send Rs0..0eminder</button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('index') }}">MeetingMate</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
 
-    <table>
-        <tr>
-            <th></th>
-            <th>Title</th>
-            <th>Link</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Attendee Email</th>
+            {% if data['logged_in'] %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
 
-        </tr>
-        {% for event in events %}
-            <tr>
-                <td><input type="checkbox" class="event-checkbox" value="{{ event.id }}"
-                           data-email = "{{ event.attendee }}" data-summary = "P{{ event.summary }}"></td>
-                <td>{{ event.summary | default('No Title') }}</td>
-                <td><a href="{{ event.htmlLink }}" target="_blank">Link</a></td>
-                <td>{{ event.start }}</td>
-                <td>{{ event.end }}</td>
-                <td>{{ event.attendee }}</td>
-             </tr>
-        {% endfor %}
-    </table>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <form action="/fetch" method="post">
+        <div class="p-3">
+            <table>
+
+                <tr class="mm-table-input">
+                    <td><label class="form-label">Future Date: </label></td>
+                    <td>
+                        <input type="date" class="form-control" id="futureDate" name="future_date">
+                    </td>
+                    <td class="button-col">
+                        <button type="submit" class="btn btn-primary btn-block">Get One on One Meetings</button>
+                    </td>
+                    {% if events %}
+                        <td class="button-reminder">
+                            <button type="button" class="btn btn-dark" id="sendReminderBtn"> Send reminder</button>
+                        </td>
+                    {% endif %}
+                </tr>
+            </table>
+
+
+            <div class="modal fade" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="reminderModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reminderModalLabel">Send Reminder</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea class="form-control" id="reminderMessage" rows="3"
+                                      placeholder="Enter your reminder message"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="sendReminder">Send Reminder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+
+                <div class="container mt-5">
+
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th></th>
+                            <th>Title</th>
+                            <th>Link</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Attendee Email</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if events %}
+                            {% for event in events %}
+                                <tr>
+                                    <td><input type="checkbox" class="event-checkbox" value="{{ event.id }}"
+                                               data-email="{{ event.attendee }}" data-summary="P{{ event.summary }}">
+                                    </td>
+                                    <td>{{ event.summary | default('No Title') }}</td>
+                                    <td><a href="{{ event.htmlLink }}" target="_blank">Link</a></td>
+                                    <td>{{ event.start }}</td>
+                                    <td>{{ event.end }}</td>
+                                    <td>{{ event.attendee }}</td>
+                                </tr>
+                            {% endfor %}
+
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No content to show</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <script>
-    document.getElementById('sendReminderBtn').addEventListener('click', function() {
+    document.getElementById('sendReminderBtn').addEventListener('click', function () {
+        $('#reminderModal').modal('show');
+    });
+    document.getElementById('sendReminder').addEventListener('click', function () {
+        let message = document.getElementById('reminderMessage').value;
+
         let selectedEvents = [];
-        document.querySelectorAll('.event-checkbox:checked').forEach(function(checkbox) {
+        document.querySelectorAll('.event-checkbox:checked').forEach(function (checkbox) {
             selectedEvents.push({
                 email: checkbox.getAttribute('data-email'),
                 summary: checkbox.getAttribute('data-summary')
@@ -46,14 +160,12 @@
             return;
         }
 
-        let message = prompt('Enter your reminder message:');
-        if (message) {
-            sendReminder(selectedEvents, message);
-        }
+        sendReminder(selectedEvents, message);
+        $('#reminderModal').modal('hide');
+
     });
 
     function sendReminder(events, message) {
-        // Make an API call
         fetch('/send_reminder', {
             method: 'POST',
             headers: {
@@ -64,17 +176,20 @@
                 message: message
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            alert('Reminder sent!');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while sending the reminder.');
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Reminder sent!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the reminder.');
+            });
     }
 </script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -6,7 +6,6 @@ import os
 from google.oauth2.credentials import Credentials
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
-from datetime import datetime
 from flask import Flask, render_template, session
 from flask_session import Session
 import base64
@@ -54,10 +53,8 @@ def index():
              'cal_meetings': session['cal_meetings'] if 'cal_meetings' in session else None}
 
     if data['logged_in']:
-
-        return render_template("cal_view2.html",data=data)
-
-    return render_template('index4.html', data=data)
+        return render_template("cal_view.html", data=data)
+    return render_template('index.html', data=data)
 
 
 @app.route('/login')
@@ -71,7 +68,6 @@ def authorize():
 
     print("Token ***** "+ str(token))
     session['token'] = token
-
     session['user_info'] = google.get('userinfo').json()
     print("User Info " + str(session['user_info']))
 
@@ -115,14 +111,10 @@ def fetch_meetings():
                 singleEvents=True,
                 orderBy='startTime'
             ).execute()
-
             events = events_result.get('items', [])
-
-
-
             one_on_one_events = get_events_processed(events)
-
             session['cal_meetings']  =one_on_one_events
+
             return redirect(url_for('index'))
 
         except Exception as e:
@@ -148,7 +140,6 @@ def send_reminder():
                                             "Reminder for " +  recipient['summary'],message)))
 
     print(response_data)
-
     return response_data
 
 def create_message(sender, to, subject, message_text):
@@ -187,13 +178,11 @@ def get_events_processed(events):
 
 def convert_time(date_time_str, timezone):
     original_dt = datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M:%S%z')
-
     pst_tz = pytz.timezone(timezone)
-
     pst_dt = original_dt.astimezone(pst_tz)
 
     return pst_dt.strftime('%Y-%m-%d %I:%M %p %Z')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
