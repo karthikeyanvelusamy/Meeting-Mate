@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Details</title>
+</head>
+<body>
+     <h1>Event Details</h1>
+
+     <button id="sendReminderBtn">Send Rs0..0eminder</button>
+
+    <table>
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Link</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Attendee Email</th>
+
+        </tr>
+        {% for event in events %}
+            <tr>
+                <td><input type="checkbox" class="event-checkbox" value="{{ event.id }}"
+                           data-email = "{{ event.attendee }}" data-summary = "P{{ event.summary }}"></td>
+                <td>{{ event.summary | default('No Title') }}</td>
+                <td><a href="{{ event.htmlLink }}" target="_blank">Link</a></td>
+                <td>{{ event.start }}</td>
+                <td>{{ event.end }}</td>
+                <td>{{ event.attendee }}</td>
+             </tr>
+        {% endfor %}
+    </table>
+
+<script>
+    document.getElementById('sendReminderBtn').addEventListener('click', function() {
+        let selectedEvents = [];
+        document.querySelectorAll('.event-checkbox:checked').forEach(function(checkbox) {
+            selectedEvents.push({
+                email: checkbox.getAttribute('data-email'),
+                summary: checkbox.getAttribute('data-summary')
+            });
+        });
+
+        if (selectedEvents.length === 0) {
+            alert('Please select at least one event.');
+            return;
+        }
+
+        let message = prompt('Enter your reminder message:');
+        if (message) {
+            sendReminder(selectedEvents, message);
+        }
+    });
+
+    function sendReminder(events, message) {
+        // Make an API call
+        fetch('/send_reminder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                recipients: events,
+                message: message
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            alert('Reminder sent!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the reminder.');
+        });
+    }
+</script>
+
+</body>
+</html>

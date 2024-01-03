@@ -1,0 +1,206 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#     <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>MeetingMate</title>#}
+{#    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">#}
+{#    <style>#}
+{#        body {#}
+{#            padding-top: 40px;#}
+{#            padding-bottom: 40px;#}
+{#            background-color: #f5f5f5;#}
+{#        }#}
+{#        .auth-container {#}
+{#            display: flex;#}
+{#            min-height: 80vh;#}
+{#            align-items: center;#}
+{#            justify-content: center;#}
+{#        }#}
+{#        .form-box {#}
+{#            padding: 20px;#}
+{#            max-width: 400px;#}
+{#            width: 100%;#}
+{#            background: #fff;#}
+{#            border-radius: 10px;#}
+{#            box-shadow: 0 4px 8px rgba(0,0,0,0.1);#}
+{#            margin-right: 20px;#}
+{#        }#}
+{#        .image-box {#}
+{#            max-width: 400px;#}
+{#            width: 100%;#}
+{#            background: url("{{ url_for('static', filename='bg.jpg') }}") center center no-repeat;#}
+{#            background-size: cover;#}
+{#            border-radius: 10px;#}
+{#        }#}
+{#        .form-control, .btn {#}
+{#            border-radius: 20px;#}
+{#        }#}
+{#        .btn-primary {#}
+{#            width: 100%;#}
+{#            padding: 10px;#}
+{#        }#}
+{#        .social-buttons {#}
+{#            display: flex;#}
+{#            justify-content: space-around;#}
+{#            margin-top: 10px;#}
+{#        }#}
+{#        .social-buttons a {#}
+{#            font-size: 1.5rem; /* Adjust size as needed */#}
+{#        }#}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{#    <div class="container text-center">#}
+{#        <div>#}
+{#            <header id="branding">#}
+{#                <h1><span class="highlight">MeetingMate</span> Web App</h1>#}
+{#            </header>#}
+{#            <nav>#}
+{#                <ul class="nav justify-content-end">#}
+{#                    {% if data['logged_in'] %}#}
+{#                        <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </nav>#}
+{#            {% if data['logged_in'] %}#}
+{#                <h1>Welcome <span style="font-style: italic">{{ data['user_info'].name }}</span>!</h1>#}
+{#                <form action="/fetch" method="post" class="mt-3">#}
+{#                    <div class="form-group">#}
+{#                        <label for="future-date">Select a Future Date:</label>#}
+{#                        <input type="date" id="future-date" name="future_date" class="form-control">#}
+{#                    </div>#}
+{#                    <button type="submit" class="btn btn-primary">Submit</button>#}
+{#                </form>#}
+{#            {% else %}#}
+{#                <p class="mt-3"><a href="/login" class="btn btn-secondary">Login with Google</a></p>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{#    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>#}
+{#    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>#}
+{#    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>#}
+{#</body>#}
+{##}
+{#    <body>#}
+{#    <div class="d-flex justify-content-center align-items-center vh-100">#}
+{#        <div class="text-center p-5 shadow rounded bg-white" style="max-width: 400px;">#}
+{#            <header id="branding">#}
+{#                <h1><span class="highlight">MeetingMate</span> Web App</h1>#}
+{#            </header>#}
+{#            <nav>#}
+{#                <ul class="nav justify-content-center">#}
+{#                    {% if data['logged_in'] %}#}
+{#                        <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </nav>#}
+{#            {% if data['logged_in'] %}#}
+{#                <h2>Welcome <span style="font-style: italic">{{ data['user_info'].name }}</span>!</h2>#}
+{#                <form action="/fetch" method="post">#}
+{#                    <div class="form-group">#}
+{#                        <label for="future-date">Select a Future Date:</label>#}
+{#                        <input type="date" id="future-date" name="future_date" class="form-control mb-3">#}
+{#                    </div>#}
+{#                    <button type="submit" class="btn btn-primary btn-block">Submit</button>#}
+{#                </form>#}
+{#            {% else %}#}
+{#                <p class="mt-3"><a href="/login" class="btn btn-secondary btn-block">Login with Google</a></p>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#    </div>#}
+{#    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>#}
+{#    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>#}
+{#    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>#}
+{#</body>#}
+{##}
+{#</html>#}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetingMate</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+        .auth-container {
+            display: flex;
+            min-height: 80vh;
+            align-items: center;
+            justify-content: center;
+        }
+       .form-box {
+            padding: 20px;
+            width: 100%;
+            max-width: 400px; /* Adjust the max-width as needed */
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-right: 20px; /* Creates space between the form box and the image */
+            z-index: 2; /* Ensure the form box is above the background image */
+        }
+        .image-box {
+            flex-grow: 1;
+            background: url("{{ url_for('static', filename='bg.jpg') }}") center center no-repeat;
+            background-size: cover;
+            border-radius: 10px;
+        }
+        .form-control, .btn {
+            border-radius: 20px;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+        }
+        .social-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        .social-buttons a {
+            font-size: 1.5rem; /* Adjust size as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="form-box">
+            <h2 class="text-center mb-4">Sign up now</h2>
+            <!-- Your form fields here -->
+            {% if data['logged_in'] %}
+                <form action="/fetch" method="post">
+                    <div class="form-group">
+                        <label for="future-date">Select a Future Date:</label>
+                        <input type="date" id="future-date" name="future_date" class="form-control mb-3">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                </form>
+            {% else %}
+                <p class="mt-3"><a href="/login" class="btn btn-secondary btn-block">Login with Google</a></p>
+            {% endif %}
+            <div class="social-buttons">
+                <!-- Social buttons -->
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-google"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+<div class="image-box"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome for social icons -->
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+</body>
+</html>

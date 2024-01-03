@@ -1,0 +1,7 @@
+Flask
+authlib
+google-api-python-client
+requests
+python-dotenv
+Flask-Session
+pytz
