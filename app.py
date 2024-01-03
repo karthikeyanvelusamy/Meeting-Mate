@@ -40,7 +40,7 @@ google = oauth.register(
                  'https://www.googleapis.com/auth/userinfo.profile',
         'token_endpoint_auth_method': 'client_secret_post',
         'token_placement': 'header',
-        'redirect_uri': 'http://localhost:5000/authorize',
+        'redirect_uri': 'https://meetingmate.onrender.com/authorize',
         'access_type': 'offline'
     }
 )
